@@ -86,3 +86,130 @@ class whisky_web_scraping():
 
             # Append each name to the list
             product_name.append(alcohol_name)
+
+        return product_name
+
+    def get_product_alcohol_percent(self, products_info_content):
+        '''
+        Extract the alcohol percent of product.
+
+        Args:
+            products_info_content(String) - The div object of class product-card__content.
+
+        Returns:
+            product_al_percent(List) - A list of alcohol percent.
+        '''
+
+        self.products_info_content = products_info_content
+
+        product_al_percent = []
+
+        # Iterate  through each product in the webpage
+        for product in range(len(products_info_content)):
+
+            # Extract the second P - which holds the alcohol values
+            al_p = products_info_content[product].find_all('p')[1]
+
+            # Apply string manipulation to extract the alcohol percent
+            alcohol_percent_str = al_p.contents[0].strip()
+            start_location_percent = alcohol_percent_str.find('/')
+            end_location_percent = alcohol_percent_str.find('%')
+            alcohol_percent = alcohol_percent_str[start_location_percent + 2:end_location_percent]
+
+            # Append each alcohol percent to the list
+            product_al_percent.append(alcohol_percent)
+
+        return product_al_percent
+
+    def get_product_alcohol_amount(self, products_info_content):
+        '''
+        Extract the alcohol amount of product.
+
+        Args:
+            products_info_content(String) - The div object of class product_card__content.
+
+        Returns:
+            product_al_amount(List) - A list of alcohol amount.
+        '''
+
+        self.products_info_content = products_info_content
+
+        product_al_amount = []
+
+        # Iterate through each product in the webpage
+        for product in range(len(products_info_content)):
+
+            # Extract the second class P - which holds alcohol values
+            al_p = products_info_content[product].find_all('p')[1]
+
+            # Apply string manipulation to extract the alcohol amount
+            alcohol_amount_str = al_p.contents[0].strip()
+            start_location_amount = 0
+            end_location_amount = alcohol_amount_str.find('cl')
+            alcohol_amount = alcohol_amount_str[start_location_amount:end_location_amount]
+
+            # Append each alcohol amount to list
+            product_al_amount.append(alcohol_amount)
+
+        return product_al_amount
+
+    def get_product_price(self, products_info_price):
+        '''
+        Extract the price of product.
+
+        Args:
+            products_info_price(String) - The div object of class product-card__data.
+
+        Returns:
+            product_price(list) - A list of prices.
+        '''
+
+        self.produts_info_price = products_info_price
+
+        product_price = []
+
+        # Iterate through each product in the webpage
+        for product in range(len(products_info_price)):
+
+            # Extract the price of each product
+            alcohol_price = products_info_price[product].contents[0].contents[0].replace('£', '').strip()
+            '''
+            al_p = products_info_price[product].find_all('p')[0]
+
+            alcohol_price_str = al_p.contents[0].strip()
+            start_location_price = alcohol_price_str.find('£')
+            end_location_price = alcohol_price_str.find('5)
+            alcohol_price = alcohol_price_str[start_location_price + 1:end_location_price + 1]
+            '''
+
+            # Append each alcohol price to the list
+            product_price.append(alcohol_price)
+        
+        return(product_price)
+
+    def create_df(self, names, alcohol_amount, alcohol_percent, price):
+        '''
+        Create a DataFrame that will hold the extracted data.
+
+        Args:
+            names(List) - A list of product names.
+            alcohol_amount(List) - A list of products alcohol amounts.
+            alcohol_percent(List) - A list of product alcohol percent.
+            price(List) - A list of product prices.
+
+        Returns:
+            original_df(DataFrame)
+        '''
+
+        self.names = names
+        self.alcohol_amount = alcohol_amount
+        self.alcohol_percent = alcohol_percent
+        self.price = price
+
+        # Create a DataFrame
+        original_df = pd.DataFrame(names, columns=['Product_Name'])
+        original_df['Alcohol_Percent'] = alcohol_percent
+        original_df['Alcohol_Amount'] = alcohol_amount
+        original_df['Alcohol_Price'] = price
+
+        return original_df

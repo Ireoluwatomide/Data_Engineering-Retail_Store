@@ -1,3 +1,4 @@
+# Import the libraries
 import requests
 import numpy as np
 import pandas as pd 
@@ -327,9 +328,9 @@ class whisky_web_scraping():
             finally:
                 start_location = link.rfind('/') + 1
                 end_location = len(link)
-                data.to_csv(link[start_location:end_location] + '.csv')
+                data.to_csv('./scrapped_data/' + link[start_location:end_location] + '.csv')
                 df = df.append(data, ignore_index=True)
         
-        df.to_csv('Large_Table' + '.csv')
+        df.to_csv('./scrapped_data/whiskey_data' + '.csv')
 
         return df
